@@ -2,7 +2,7 @@
   "name": "Foodran - วันนี้กินอะไรดี?",
   "short_name": "Foodran",
   "description": "แอปสุ่มเมนูอาหารไทย หากินง่าย ช่วยคุณตัดสินใจมื้ออร่อยแบบรวดเร็วทันใจ",
-  "start_url": "/index.html",
+  "start_url": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#fafaf9",

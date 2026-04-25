@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>Foodran - วันนี้กินอะไรดี?</title>
+    <meta name="description" content="สุ่มเมนูอาหารไทยหากินง่าย แอป Foodran ช่วยคุณตัดสินใจมื้ออร่อยแบบรวดเร็วทันใจ">
+    <meta name="keywords" content="สุ่มอาหาร, วันนี้กินอะไรดี, อาหารไทย, Foodran">
+    <meta name="author" content="Foodran">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://foodran.vercel.app/">
+    <meta property="og:title" content="Foodran - วันนี้กินอะไรดี?">
+    <meta property="og:description" content="คิดไม่ออกว่าจะกินอะไรดี? กดสุ่มเมนูที่นี่เลย!">
+    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/3448/3448066.png">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn-icons-png.flaticon.com/512/3448/3448066.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="https://cdn-icons-png.flaticon.com/512/3448/3448066.png">
+    <link rel="shortcut icon" href="https://cdn-icons-png.flaticon.com/512/3448/3448066.png">
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="https://cdn-icons-png.flaticon.com/512/3448/3448066.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Foodran">
+
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#fafaf9">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Kanit', 'sans-serif'] },
+                    colors: { primary: '#f59e0b' }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* ล็อกไม่ให้คลุมดำข้อความได้ (เหมือนแอปจริง) */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        @keyframes bounce-subtle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-bounce-subtle { animation: bounce-subtle 2s infinite; }
+        
+        .shaking { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
+</head>
+<body class="bg-[#fafaf9] text-slate-900 min-h-screen flex flex-col items-center justify-center p-6 selection:bg-orange-100 overflow-hidden">
+
+    <div id="splash-screen" class="fixed inset-0 bg-[#fafaf9] z-50 flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="relative">
+            <div class="absolute inset-0 bg-orange-200 rounded-full blur-xl opacity-50 animate-pulse"></div>
+            <img src="https://cdn-icons-png.flaticon.com/512/3448/3448066.png" class="w-24 h-24 relative z-10 animate-bounce-subtle" alt="Loading">
+        </div>
+        <h2 class="mt-6 text-2xl font-bold text-slate-800 tracking-wide">Foodran</h2>
+        <p class="text-sm text-slate-400 mt-2 font-medium">กำลังเตรียมเมนูอร่อย...</p>
+    </div>
+
+    <div class="fixed top-0 left-0 w-full h-full -z-10 overflow-hidden">
+        <div class="absolute top-[-10%] right-[-10%] w-64 h-64 bg-orange-100 rounded-full blur-3xl opacity-60"></div>
+        <div class="absolute bottom-[-5%] left-[-5%] w-80 h-80 bg-orange-50 rounded-full blur-3xl opacity-60"></div>
+    </div>
+
+    <main class="glass w-full max-w-[400px] rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden">
+        <div class="p-8 pt-10 text-center">
+            <div class="inline-block p-4 bg-orange-50 rounded-3xl mb-6 animate-bounce-subtle shadow-sm">
+                <img src="https://cdn-icons-png.flaticon.com/512/3448/3448066.png" class="w-12 h-12" alt="Foodran Logo">
+            </div>
+            
+            <h1 class="text-4xl font-bold tracking-tight text-slate-900 mb-2">Foodran</h1>
+            <p id="status" class="text-xs font-semibold text-slate-400 uppercase tracking-[0.2em] mb-10">กำลังโหลด...</p>
+
+            <div class="min-h-[140px] flex items-center justify-center mb-8 px-4 border-y border-slate-50">
+                <div id="food-result" class="text-3xl md:text-4xl font-bold text-orange-500 leading-tight">
+                    รอสักครู่...
+                </div>
+            </div>
+
+            <button onclick="randomizeFood()" id="random-btn" disabled class="group relative w-full bg-slate-900 hover:bg-black text-white text-lg font-bold py-5 rounded-[1.5rem] transition-all duration-300 shadow-xl hover:shadow-2xl active:scale-[0.96] disabled:bg-slate-200 disabled:cursor-not-allowed overflow-hidden">
+                <span class="relative z-10">วันนี้กินอะไรดี?</span>
+                <div class="absolute inset-0 bg-gradient-to-r from-orange-400 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            </button>
+        </div>
+
+        <footer class="bg-slate-50 py-5 text-center text-[10px] text-slate-400 font-medium uppercase tracking-widest">
+            Made with Love Mickky
+        </footer>
+    </main>
+
+    <script>
+        // 1. นำ URL ที่ได้จาก Publish to web (CSV) มาวางที่นี่
+        const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRUOwkuoMOgfOHlnfU6sbztoWndUFCrR5V-0uGvs25fHDZFyv3ICph_hypm6lR7xdBKXUJjh5R2sjd_/pub?gid=0&single=true&output=csv';
+        let foodList = [];
+
+        async function initApp() {
+            const resultElement = document.getElementById("food-result");
+            const statusElement = document.getElementById("status");
+            const button = document.getElementById("random-btn");
+            const splashScreen = document.getElementById("splash-screen");
+
+            try {
+                const response = await fetch(SHEET_URL);
+                const data = await response.text();
+                
+                foodList = data.split('\n')
+                               .map(item => item.trim())
+                               .filter(item => item !== "" && item !== "ชื่ออาหาร");
+
+                if (foodList.length > 0) {
+                    resultElement.textContent = "พร้อมแล้ว!";
+                    button.disabled = false;
+                    statusElement.textContent = `มีเมนูให้สุ่ม ${foodList.length} อย่าง`;
+                } else { throw new Error("No data"); }
+            } catch (error) {
+                resultElement.textContent = "Error!";
+                statusElement.textContent = "เชื่อมต่อข้อมูลไม่ได้";
+            } finally {
+                // หน่วงเวลาหน้า Loading นิดหน่อยให้ดูสมูท แล้วค่อยเฟดออก
+                setTimeout(() => {
+                    splashScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        splashScreen.remove(); // ลบหน้าโหลดออกจาก DOM ไปเลย
+                    }, 500);
+                }, 800);
+            }
+        }
+
+        function randomizeFood() {
+            const resultElement = document.getElementById("food-result");
+            const button = document.getElementById("random-btn");
+            
+            // เพิ่มการสั่น (Haptic Feedback) สำหรับมือถือ Android
+            if (window.navigator.vibrate) window.navigator.vibrate(50);
+            
+            button.disabled = true;
+            resultElement.classList.add("shaking");
+            resultElement.textContent = "กำลังเลือก...";
+
+            setTimeout(() => {
+                const randomIndex = Math.floor(Math.random() * foodList.length);
+                resultElement.classList.remove("shaking");
+                resultElement.textContent = foodList[randomIndex];
+                button.disabled = false;
+            }, 600);
+        }
+
+        initApp();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
+    </script>
+</body>
+</html>

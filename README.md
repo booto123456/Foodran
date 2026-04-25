@@ -23,4 +23,4 @@ Foodran คือ Web Application (PWA) แบบ Lightweight สำหรับ
 
 1. **Clone repository:**
    ```bash
-   git clone [https://github.com/yourusername/foodran.git](https://github.com/yourusername/foodran.git)
+   git clone https://github.com/booto123456/Foodran
